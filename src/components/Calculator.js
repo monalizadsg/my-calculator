@@ -1,91 +1,136 @@
 import React, { useState } from "react";
 
 const Calculator = () => {
-  const [value, setValue] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [storedValue, setStoredValue] = useState("");
+  const [selectedOperator, setSelectedOperator] = useState("");
 
   const handleClick = (e) => {
-    console.log(e.target.value);
-    let currentValue = e.target.value;
-    if (currentValue === "CE") {
-      //delete current value
-      console.log(currentValue);
-    } else if (currentValue === "C") {
-      //reset
-      console.log(currentValue);
-    } else if (currentValue === "=") {
-      //compute
-      console.log(currentValue);
+    let currentValue = e.target.name;
+
+    if (inputValue === "" && currentValue === "0") {
+      setInputValue(inputValue);
     } else {
-      setValue(value + currentValue);
+      setInputValue(inputValue + currentValue);
     }
+  };
+
+  const addDecimal = (e) => {
+    if (inputValue.indexOf(".") === -1) {
+      setInputValue(inputValue + e.target.name);
+    }
+  };
+
+  const handleReset = () => {
+    setInputValue("");
+    setStoredValue("");
+    setSelectedOperator("");
+  };
+
+  const handleBackButton = () => {
+    if (inputValue !== "") {
+      const deletedNumber = inputValue.slice(0, inputValue.length - 1);
+      setInputValue(deletedNumber);
+    }
+  };
+
+  const handleSetCalcFunction = (event) => {
+    const operator = event.target.name;
+
+    setStoredValue(inputValue);
+    setInputValue("");
+    setSelectedOperator(operator);
+  };
+
+  const calculate = () => {
+    let result = "0";
+    let previousValue = parseFloat(storedValue);
+    let currentValue = parseFloat(inputValue);
+
+    switch (selectedOperator) {
+      case "+":
+        result = previousValue + currentValue;
+        break;
+      case "-":
+        result = previousValue - currentValue;
+        break;
+      case "*":
+        result = previousValue * currentValue;
+        break;
+      case "/":
+        result = previousValue / currentValue;
+        break;
+      default:
+        result = "0";
+    }
+
+    setInputValue(result.toString());
   };
 
   return (
     <div>
       <h1>Calculator</h1>
-      <div>Value: {value} </div>
-      <button onClick={handleClick} value='('>
-        (
-      </button>
-      <button onClick={handleClick} value='CE'>
+      <div>
+        <input type='text' value={inputValue} />
+      </div>
+
+      <button onClick={handleBackButton} name='CE'>
         CE
       </button>
-      <button onClick={handleClick} value='('>
-        )
-      </button>
-      <button onClick={handleClick} value='C'>
+
+      <button onClick={handleReset} name='C'>
         C
       </button>
       <br />
-      <button value='1' onClick={handleClick}>
+      <button name='1' onClick={handleClick}>
         1
       </button>
-      <button value='2' onClick={handleClick}>
+      <button name='2' onClick={handleClick}>
         2
       </button>
-      <button value='3' onClick={handleClick}>
+      <button name='3' onClick={handleClick}>
         3
       </button>
-      <button value='4' onClick={handleClick}>
+      <button name='4' onClick={handleClick}>
         4
       </button>
       <br />
-      <button value='5' onClick={handleClick}>
+      <button name='5' onClick={handleClick}>
         5
       </button>
-      <button value='6' onClick={handleClick}>
+      <button name='6' onClick={handleClick}>
         6
       </button>
-      <button value='7' onClick={handleClick}>
+      <button name='7' onClick={handleClick}>
         7
       </button>
-      <button value='8' onClick={handleClick}>
+      <button name='8' onClick={handleClick}>
         8
       </button>
       <br />
-      <button value='9' onClick={handleClick}>
+      <button name='9' onClick={handleClick}>
         9
       </button>
-      <button value='0' onClick={handleClick}>
+      <button name='0' onClick={handleClick}>
         0
       </button>
-      <button value='.' onClick={handleClick}>
+      <button name='.' onClick={addDecimal}>
         .
       </button>
       <br />
-      <button value='+' onClick={handleClick}>
+      <button name='+' onClick={(e) => handleSetCalcFunction(e)}>
         +
       </button>
-      <button value='-' onClick={handleClick}>
+      <button name='-' onClick={(e) => handleSetCalcFunction(e)}>
         -
       </button>
-      <button value='*' onClick={handleClick}>
+      <button name='*' onClick={(e) => handleSetCalcFunction(e)}>
         x
       </button>
-      <button value='/' onClick={handleClick}>
+      <button name='/' onClick={(e) => handleSetCalcFunction(e)}>
         ÷
       </button>
-      <button value='=' onClick={handleClick}>
+      <button name='=' onClick={calculate}>
         =
       </button>
     </div>
